@@ -1,0 +1,265 @@
+.banner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.push {
+  margin-left: auto;
+}
+
+.logo {
+  color: #36b9cc;
+  margin-left: 10px;
+  margin-top: 0.5em;
+}
+
+.info {
+  color: #36b9cc;
+  margin-left: auto;
+  margin-top: 0.5em;
+}
+
+.logoAccent {
+  color: 1cc88a;
+}
+
+.logoGfx {
+  height: 3em;
+}
+
+.country {
+  stroke: black;
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+  /* fill: #FAEBD7; */
+}
+
+.eup {
+  stroke: black;
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+  /* fill: green; */
+}
+
+.areamap {
+  background-color: #b0c4de;
+  border: 1px solid #d8d8d8;
+}
+
+.treemap {
+  margin-top: 0px;
+}
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.disclaimer {
+  padding-top: 2px;
+  font-size: 0.8em;
+  display: block;
+}
+
+.bar rect {
+  /* fill: cadetblue; */
+  opacity: 0.3;
+  stroke: white;
+}
+
+text {
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 400;
+  fill: white;
+  font-size: 10px;
+}
+
+.textBox {
+  font-size: 0.8em;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+#chart {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#lineChart {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#lineChart svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#lineChart text,
+#stackedBar .axisY text,
+#BarChart text,
+#Buttons .label {
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 400;
+  fill: black;
+  font-size: 10px;
+}
+
+#BarChart {
+  height: 70%;
+  width: 100%;
+  position: absolute;
+}
+
+#Buttons {
+  height: 30%;
+  width: 80%;
+  position: absolute;
+  margin-top: 75%;
+  margin-left: 15%;
+}
+
+/* #BarChart .axisbottom, .axisleft  {
+  stroke: black;
+  color: black;
+} */
+
+/* #BarChart text  {
+  font-family: Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  fill: black;
+  font-weight: 100;
+  color: black;
+  font-size: 8px;
+} */
+
+/* #BarChart path.domain .tick {
+  border: 1px solid black;
+  stroke: black;
+  color: black;
+} */
+
+#treemap {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#treemap rect {
+  opacity: 0.7;
+}
+
+div.tooltip {
+  position: absolute;
+  z-index: 100;
+  visibility: hidden;
+  background-color: white;
+  text-align: center;
+  padding: 4px;
+  border: 1px solid black;
+  border-radius: 4px;
+  color: black;
+}
+
+#volumeGauge {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#stackedBar {
+  /* border: 1px solid black; */
+  position: absolute;
+  width: 50%;
+  height: 100%;
+}
+
+#cylinder {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  margin-left: 50%;
+}
+
+#cylinder svg {
+  margin-left: 30%;
+  margin-top: 20%;
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
+}
+
+/* .axisY {
+  border: 1px solid black;
+  stroke: black;
+  color: black;
+  font-size: 6px;
+} */
+
+#stackedBar path.domain {
+  border: 1px solid black;
+  stroke: black;
+  color: black;
+}
+
+#stackedBar .xaxis,
+#stackedBar .yaxis text {
+  border: 1px solid black;
+  stroke: black;
+  color: black;
+}
+
+#unit,
+#use,
+#description,
+#minGreenArea,
+#buldingDesc,
+#buildingsPerHa,
+#popDensity,
+#area,
+#cna,
+#cnb,
+#cnc,
+#cnd,
+#station {
+  color: blue;
+  font-weight: bold;
+}
+
+.leaflet-tooltip-center {
+  color: white;
+  background-color: transparent;
+  border: transparent;
+  box-shadow: none;
+}

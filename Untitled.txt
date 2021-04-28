@@ -1,0 +1,70 @@
+Papa.parse("data/CNv_calculated.csv, {
+    download: true,
+    header: true,
+    delimiter: "",
+    complete: function(results) { //everything below runs only after the CSV has been loaded and processed.
+
+        var cnvValues = {},
+        data = results.data;
+
+        for (var i = 0; i < data.length; i += 1) {
+          cnvValues[data[i].cnvValues] = data[i].cnv;
+        }
+
+        function getColor(d) {
+            return d > 0.5 ? '#800026' :
+                   d > 0.4  ? '#BD0026' :
+                   d > 0.3  ? '#E31A1C' :
+                   d > 0.25  ? '#FC4E2A' :
+                   d > 0.2   ? '#FD8D3C' :
+                   d > 0.15   ? '#FEB24C' :
+                   d > 0.1   ? '#FED976' :
+                              '#FFEDA0';
+        }
+
+        var pilotLayer =  new L.geoJson(null, {
+          style: function(feature) {
+              return {
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                fillOpacity: 0.7,
+                fillColor: getColor(parseFloat(DCOMIRIS[feature.properties.UNIT]))
+              };
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.UNIT);
+                layer.on({
+                    mouseover: highlightFeature,
+                    mouseout: resetHighlight,
+                    click: zoomToFeature
+                });
+                //console.log(feature.properties.UNIT);
+            }
+        });
+}
+});
+
+
+
+function choroplethColour(e){
+
+  d3.csv("data/CNv_calculated.csv", function(d) {
+
+    datacol.push({
+      unit: d.UNIT,
+      cnv: +d.CNv
+    });
+    }).then(function(d) {
+   filtData = datacol.filter(function(d)
+     {
+       if( d.unit == e)
+             {
+                 return d
+             }
+
+         });
+         c = filtData;
+         //console.log(c[0].cnv);
+         return chorCol = getCol(c[0].cnv);
+ });
+}
