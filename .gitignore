@@ -1,0 +1,5 @@
+# ignore mac_os junk
+.DS_store
+
+# ignore shape files dir
+/data/shp_final
