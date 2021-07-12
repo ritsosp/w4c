@@ -247,7 +247,7 @@ d3.csv("data/CNv_calculated.csv").then(function (data) {
   $.getJSON("data/maps/F_unit.geojson", function (data) {
     unitLayer.addData(data);
   });
-  $.getJSON("data/maps/EUP_pilot.geojson", function (data) {
+  $.getJSON("data/maps/F_unit.geojson", function (data) {
     pilotLayer.addData(data);
   });
 
