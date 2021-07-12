@@ -145,8 +145,10 @@ text {
   height: 30%;
   width: 80%;
   position: absolute;
-  margin-top: 75%;
-  margin-left: 15%;
+  /* margin-top: 75%; */
+  bottom: 0px;
+  /* margin-left: 15%; */
+  left: 0px;
 }
 
 /* #BarChart .axisbottom, .axisleft  {
@@ -183,7 +185,7 @@ div.tooltip {
   z-index: 100;
   visibility: hidden;
   background-color: white;
-  text-align: center;
+  text-align: left;
   padding: 4px;
   border: 1px solid black;
   border-radius: 4px;
@@ -262,4 +264,9 @@ div.tooltip {
   background-color: transparent;
   border: transparent;
   box-shadow: none;
+}
+
+/* PBU Additions */
+.overflow-scroll-y {
+  overflow-y: scroll;
 }

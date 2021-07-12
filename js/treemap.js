@@ -1,126 +1,185 @@
-var treeMapHeight=400;
+function getTranslation(transform) {
+  // Create a dummy g for calculation purposes only. This will never
+  // be appended to the DOM and will be discarded once this function
+  // returns.
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-var treeContainerWidth = +d3.select("#treemap").style('width').slice(0, -2)
-var treeMap = d3.select("#treemap").append("svg").attr("width",treeContainerWidth).attr("height",treeMapHeight).append("g")
-  .attr("transform",
-        "translate(" + 0 + "," + 0 + ")");
+  // Set the transform attribute to the provided string value.
+  g.setAttributeNS(null, "transform", transform);
 
+  // consolidate the SVGTransformList containing all transformations
+  // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+  // its SVGMatrix.
+  var matrix = g.transform.baseVal.consolidate().matrix;
 
+  // As per definition values e and f are the ones for the translation.
+  return [matrix.e, matrix.f];
+}
+
+// create a tooltip
+var Tooltip = d3
+  .select("#treemap")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tm-tooltip")
+  .style("background-color", "white")
+  .style("position", "absolute")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "4px")
+  .style("pointer-events", "none")
+  .style("padding", "4px");
+
+// Three function that change the tooltip when user hover / move / leave a cell
+var mouseover = function (d) {
+  // console.log(d.data.key);
+  Tooltip.style("opacity", 1).style("color", "black");
+  d3.select(this).style("opacity", "0.75");
+};
+
+var mousemove = function (d) {
+  // console.log(d.data.key);
+
+  let t = getTranslation(this.getAttribute("transform"));
+  Tooltip.html(`Soil type: ${d.data.key}<br>Value: ${d.data.value}`)
+    .style("left", d3.mouse(this)[0] + t[0] + 5 + "px")
+    .style("top", d3.mouse(this)[1] + t[1] + 5 + "px");
+};
+
+var mouseleave = function (d) {
+  // console.log(d.data.key);
+
+  Tooltip.style("opacity", 0);
+  d3.select(this).style("stroke", "none").style("opacity", 0.8);
+};
+
+var treeMapHeight = 400;
+
+var treeContainerWidth = +d3.select("#treemap").style("width").slice(0, -2);
+var treeMap = d3
+  .select("#treemap")
+  .append("svg")
+  .attr("width", treeContainerWidth)
+  .attr("height", treeMapHeight)
+  .append("g")
+  .attr("transform", "translate(" + 0 + "," + 0 + ")");
 
 var data = [];
 var newarray = [];
 var filteredData;
 
-
 function selectData(selectUnit) {
-
-  var color = d3.scaleLinear()
+  var color = d3
+    .scaleLinear()
     .domain([1, 50, 90, 100])
-    .range([ "#545454", "#898F8B", "#29B200", "#0066CC"])
+    .range(["#545454", "#898F8B", "#29B200", "#0066CC"]);
 
+  d3.csv("data/EUP_CURRENT_LAND_USE.csv", function (d) {
+    data.push({
+      unit: d.UNIT,
+      landUse: d.LAND_USE,
+      currentLandUse: d.CURRENT_LAND_USE_CLASS,
+      area: +d.AREA,
+    });
+  }).then(function (d) {
+    filteredData = data.filter(function (d) {
+      if (d.unit == selectUnit) {
+        return d;
+      }
+    });
+    data = filteredData;
 
-     d3.csv("data/EUP_CURRENT_LAND_USE.csv", function(d) {
-       data.push({
-         unit: d.UNIT,
-         landUse: d.LAND_USE,
-         currentLandUse: d.CURRENT_LAND_USE_CLASS,
-         area: +d.AREA
-       });
-       }).then(function(d) {
+    var treemapLayout = d3
+      .treemap()
+      .size([treeContainerWidth, treeMapHeight])
+      .paddingOuter(0);
 
-              filteredData = data.filter(function(d)
-                {
-                  if( d.unit == selectUnit)
-                        {
-                            return d;
-                        }
-
-                    });
-              data = filteredData;
-
-
-              var treemapLayout = d3.treemap()
-                .size([treeContainerWidth, treeMapHeight])
-                .paddingOuter(0);
-
-              var nest = d3.nest()
-                  .key(function(d) { return d.currentLandUse; })
-                  .rollup(function(d) { return d3.sum(d, function(d) { return +d.area; }); });
-
-              var rootNode = d3.hierarchy({values: nest.entries(data)}, function(d) { return d.values; })
-                  .sum(function(d) { return d.value; });
-
-              treemapLayout(rootNode);
-
-              //console.log(rootNode.leaves());
-
-
-              treeMap.selectAll("g > *").remove();
-
-              var nodes = treeMap
-                .selectAll('g')
-                .data(rootNode.leaves())
-                .enter()
-                .append('g')
-                .attr('transform', function(d) {return 'translate(' + [d.x0, d.y0] + ')'})
-
-              nodes
-                .append('rect')
-                .attr('width', function(d) { return d.x1 - d.x0; })
-                .attr('height', function(d) { return d.y1 - d.y0; })
-                .style("fill", function(d){return color(col(d.data.key))})
-
-              nodes
-                .append('text')
-                .attr('dx', 4)
-                .attr('dy', 14)
-                .text(function(d) {
-                  return d.data.key;
-                })
-
+    var nest = d3
+      .nest()
+      .key(function (d) {
+        return d.currentLandUse;
+      })
+      .rollup(function (d) {
+        return d3.sum(d, function (d) {
+          return +d.area;
+        });
       });
+
+    var rootNode = d3
+      .hierarchy({ values: nest.entries(data) }, function (d) {
+        return d.values;
+      })
+      .sum(function (d) {
+        return d.value;
+      });
+
+    treemapLayout(rootNode);
+
+    //console.log(rootNode.leaves());
+
+    treeMap.selectAll("g > *").remove();
+
+    var nodes = treeMap
+      .selectAll("g")
+      .data(rootNode.leaves())
+      .enter()
+      .append("g")
+      .attr("transform", function (d) {
+        return "translate(" + [d.x0, d.y0] + ")";
+      })
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
+
+    nodes
+      .append("rect")
+      .attr("width", function (d) {
+        return d.x1 - d.x0;
+      })
+      .attr("height", function (d) {
+        return d.y1 - d.y0;
+      })
+      .style("fill", function (d) {
+        return color(col(d.data.key));
+      });
+
+    nodes
+      .append("text")
+      .attr("dx", 4)
+      .attr("dy", 14)
+      .text(function (d) {
+        return d.data.key;
+      });
+  });
+}
+
+function col(d) {
+  if (d == "Building") {
+    LandUseColor = 1;
+  } else if (d == "Street") {
+    LandUseColor = 20;
+  } else if (d == "Facility") {
+    LandUseColor = 30;
+  } else if (d == "Path") {
+    LandUseColor = 40;
+  } else if (d == "Courtyard") {
+    LandUseColor = 50;
+  } else if (d == "Orchard") {
+    LandUseColor = 60;
+  } else if (d == "Schrubs") {
+    LandUseColor = 70;
+  } else if (d == "Grass") {
+    LandUseColor = 80;
+  } else if (d == "Field") {
+    LandUseColor = 89;
+  } else if (d == "Water") {
+    LandUseColor = 100;
+  } else {
+    LandUseColor = 0;
   }
 
-  function col(d){
-
-    if (d == "Building"){
-      LandUseColor = 1;
-    }
-    else if (d == "Street"){
-      LandUseColor = 20;
-    }
-    else if (d == "Facility"){
-      LandUseColor = 30;
-    }
-    else if (d == "Path"){
-      LandUseColor = 40;
-    }
-    else if (d == "Courtyard"){
-      LandUseColor = 50;
-    }
-    else if (d == "Orchard"){
-      LandUseColor = 60;
-    }
-    else if (d == "Schrubs"){
-      LandUseColor = 70;
-    }
-    else if (d == "Grass"){
-      LandUseColor = 80;
-    }
-    else if (d == "Field"){
-      LandUseColor = 89;
-    }
-    else if (d == "Water"){
-      LandUseColor = 100;
-    }
-    else {
-      LandUseColor = 0;
-    }
-
-    return LandUseColor;
-  }
-
-
+  return LandUseColor;
+}
 
 // var data = [];
 //
